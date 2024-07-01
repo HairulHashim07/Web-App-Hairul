@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combined Google Login and 3D Periodic Table</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: sans-serif; }
+    .element { width: 120px; height: 160px; box-shadow: 0px 0px 12px rgba(0,0,0,0.5); border: 1px solid rgba(127,255,255,0.25); text-align: center; cursor: default; }
+    .element .number { position: absolute; top: 10px; right: 10px; font-size: 12px; color: rgba(127,255,255,0.75); }
+    .element .symbol { position: absolute; top: 40px; left: 0px; right: 0px; font-size: 40px; font-weight: bold; color: rgba(255,255,255,0.75); text-shadow: 0 0 10px rgba(0,255,255,0.95); }
+    .element .details { position: absolute; bottom: 15px; left: 0px; right: 0px; font-size: 12px; color: rgba(127,255,255,0.75); }
+  </style>
+</head>
+<body>
+  <div id="g_id_onload"
+       data-client_id="YOUR_GOOGLE_CLIENT_ID"
+       data-callback="handleCredentialResponse">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <div id="container"></div>
+  <button id="table">Table</button>
+  <button id="sphere">Sphere</button>
+  <button id="helix">Helix</button>
+  <button id="grid">Grid</button>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
+  <script src="https://threejs.org/examples/js/renderers/CSS3DRenderer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/Tween.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
