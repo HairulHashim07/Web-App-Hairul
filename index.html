@@ -1,37 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Combined Google Login and 3D Periodic Table</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body { font-family: sans-serif; }
-    .element { width: 120px; height: 160px; box-shadow: 0px 0px 12px rgba(0,0,0,0.5); border: 1px solid rgba(127,255,255,0.25); text-align: center; cursor: default; }
-    .element .number { position: absolute; top: 10px; right: 10px; font-size: 12px; color: rgba(127,255,255,0.75); }
-    .element .symbol { position: absolute; top: 40px; left: 0px; right: 0px; font-size: 40px; font-weight: bold; color: rgba(255,255,255,0.75); text-shadow: 0 0 10px rgba(0,255,255,0.95); }
-    .element .details { position: absolute; bottom: 15px; left: 0px; right: 0px; font-size: 12px; color: rgba(127,255,255,0.75); }
-  </style>
+    <title>three.js css3d - periodic table</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="main.css">
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
-  <div id="g_id_onload"
-       data-client_id="728639896565-b9ms0bmp731b7o3r6j77fj9b7l9g1of4.apps.googleusercontent.com"
-       data-callback="handleCredentialResponse">
-  </div>
-  <div class="g_id_signin" data-type="standard"></div>
 
-  <div id="container"></div>
-  <button id="table">Table</button>
-  <button id="sphere">Sphere</button>
-  <button id="helix">Helix</button>
-  <button id="grid">Grid</button>
+<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> css3d - periodic table.</div>
+<div id="container"></div>
+<div id="menu">
+    <button id="table">TABLE</button>
+    <button id="sphere">SPHERE</button>
+    <button id="helix">HELIX</button>
+    <button id="grid">GRID</button>
+</div>
 
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
-  <script src="https://threejs.org/examples/js/renderers/CSS3DRenderer.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/Tween.min.js"></script>
-  <script src="script.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "three": "../build/three.module.js",
+            "three/addons/": "./jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import TWEEN from 'three/addons/libs/tween.module.js';
+    import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+    import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+
+    let camera, scene, renderer;
+    let controls;
+
+    const objects = [];
+    const targets = { table: [], sphere: [], helix: [], grid: [] };
+
+    init();
+    animate();
+
+    function init() {
+        camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
+        camera.position.z = 3000;
+
+        scene = new THREE.Scene();
+
+        // Load data from Google Sheets
+        fetchGoogleSheetData().then(data => {
+            createTableObjects(data);
+            transform(targets.table, 2000); // Show table initially
+        }).catch(error => {
+            console.error('Error fetching data from Google Sheets:', error);
+        });
+
+        // Renderer setup
+        renderer = new CSS3DRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        // Controls setup
+        controls = new TrackballControls(camera, renderer.domElement);
+        controls.minDistance = 500;
+        controls.maxDistance = 6000;
+        controls.addEventListener('change', render);
+
+        // Menu button event listeners
+        document.getElementById('table').addEventListener('click', () => transform(targets.table, 2000));
+        document.getElementById('sphere').addEventListener('click', () => transform(targets.sphere, 2000));
+        document.getElementById('helix').addEventListener('click', () => transform(targets.helix, 2000));
+        document.getElementById('grid').addEventListener('click', () => transform(targets.grid, 2000));
+
+        window.addEventListener('resize', onWindowResize);
+    }
+
+    async function fetchGoogleSheetData() {
+        const sheetId = '1fsjeGyYwvsPz1M6I3ppuPb5d2Qx7eFdLMIQvJ6tWq90';
+        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A1:E118?key=AIzaSyCXVXtfzQbZxJnbZ99O8YQ244mDs4Y7bFk`);
+        const data = await response.json();
+        return data.values;
+    }
+
+    function createTableObjects(data) {
+        for (let i = 0; i < data.length; i++) {
+            const element = document.createElement('div');
+            element.className = 'element';
+            element.style.backgroundColor = `rgba(0,127,127,${Math.random() * 0.5 + 0.25})`;
+
+            const number = document.createElement('div');
+            number.className = 'number';
+            number.textContent = i + 1;
+            element.appendChild(number);
+
+            const symbol = document.createElement('div');
+            symbol.className = 'symbol';
+            symbol.textContent = data[i][0]; // Symbol from Google Sheet
+            element.appendChild(symbol);
+
+            const details = document.createElement('div');
+            details.className = 'details';
+            details.innerHTML = `${data[i][1]}<br>${data[i][2]}`; // Name and weight from Google Sheet
+            element.appendChild(details);
+
+            const objectCSS = new CSS3DObject(element);
+            objectCSS.position.x = Math.random() * 4000 - 2000;
+            objectCSS.position.y = Math.random() * 4000 - 2000;
+            objectCSS.position.z = Math.random() * 4000 - 2000;
+            scene.add(objectCSS);
+
+            objects.push(objectCSS);
+
+            // Target for table layout
+            const object = new THREE.Object3D();
+            object.position.x = (data[i][3] * 140) - 1330; // Adjust x position based on column 4 in Google Sheet
+            object.position.y = -(data[i][4] * 180) + 990; // Adjust y position based on column 5 in Google Sheet
+
+            targets.table.push(object);
+        }
+    }
+
+    function transform(targets, duration) {
+        TWEEN.removeAll();
+
+        for (let i = 0; i < objects.length; i++) {
+            const object = objects[i];
+            const target = targets[i];
+
+            new TWEEN.Tween(object.position)
+                .to({ x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .start();
+
+            new TWEEN.Tween(object.rotation)
+                .to({ x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .start();
+        }
+
+        new TWEEN.Tween(this)
+            .to({}, duration * 2)
+            .onUpdate(render)
+            .start();
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        render();
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        TWEEN.update();
+        controls.update();
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+    }
+</script>
+
 </body>
 </html>
