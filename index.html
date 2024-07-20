@@ -40,8 +40,13 @@
 
         // Load data from Google Sheets
         fetchGoogleSheetData().then(data => {
-            createTableObjects(data);
-            transform(targets.table, 2000); // Show table initially
+            if (data) {
+                console.log('Data fetched successfully:', data);
+                createTableObjects(data);
+                transform(targets.table, 2000); // Show table initially
+            } else {
+                console.error('No data fetched from Google Sheets.');
+            }
         }).catch(error => {
             console.error('Error fetching data from Google Sheets:', error);
         });
