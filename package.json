@@ -1,0 +1,15 @@
+{
+  "name": "web-app-hairul",
+  "version": "1.0.0",
+  "description": "Application for Junior Dev",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.166.1",
+    "tween": "^0.9.0"
+  }
+}
