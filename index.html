@@ -74,7 +74,7 @@
     async function fetchGoogleSheetData() {
       const sheetId = '1fsjeGyYwvsPz1M6I3ppuPb5d2Qx7eFdLMIQvJ6tWq90';
       const apiKey = 'AIzaSyCXVXtfzQbZxJnbZ99O8YQ244mDs4Y7bFk'; // Replace with your Google API key
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A1:E118?key=${apiKey}`;
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A1:F201?key=${apiKey}`;
 
       try {
           const response = await fetch(url);
