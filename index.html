@@ -102,11 +102,11 @@
 
     <script type="module">
 
-        import * as THREE from 'three';
-
-        import TWEEN from 'three/addons/libs/tween.module.js';
-        import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-        import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+        import { TWEEN } from 'https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.0/tween.umd.js';
+        import { TrackballControls } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/controls/TrackballControls.js';
+        import { CSS3DRenderer, CSS3DObject } from 'https://cdn.jsdelivr.net/npm/three@0.134.0/examples/jsm/renderers/CSS3DRenderer.js';
+        
 
         const table = [
             'H', 'Hydrogen', '1.00794', 1, 1,
@@ -178,8 +178,8 @@
             'Ho', 'Holmium', '164.93032', 14, 9,
             'Er', 'Erbium', '167.259', 15, 9,
             'Tm', 'Thulium', '168.93421', 16, 9,
-            'Yb', 'Ytterbium', '173.04', 17, 9,
-            'Lu', 'Lutetium', '174.967', 18, 9,
+            'Yb', 'Ytterbium', '173.054', 17, 9,
+            'Lu', 'Lutetium', '174.9668', 18, 9,
             'Hf', 'Hafnium', '178.49', 4, 6,
             'Ta', 'Tantalum', '180.94788', 5, 6,
             'W', 'Tungsten', '183.84', 6, 6,
@@ -213,13 +213,13 @@
             'No', 'Nobelium', '(259)', 17, 10,
             'Lr', 'Lawrencium', '(262)', 18, 10,
             'Rf', 'Rutherfordium', '(267)', 4, 7,
-            'Db', 'Dubnium', '(270)', 5, 7,
+            'Db', 'Dubnium', '(268)', 5, 7,
             'Sg', 'Seaborgium', '(271)', 6, 7,
-            'Bh', 'Bohrium', '(270)', 7, 7,
-            'Hs', 'Hassium', '(277)', 8, 7,
+            'Bh', 'Bohrium', '(272)', 7, 7,
+            'Hs', 'Hassium', '(270)', 8, 7,
             'Mt', 'Meitnerium', '(276)', 9, 7,
-            'Ds', 'Darmstadtium', '(281)', 10, 7,
-            'Rg', 'Roentgenium', '(280)', 11, 7,
+            'Ds', 'Darmstadium', '(281)', 10, 7,
+            'Rg', 'Roentgenium', '(282)', 11, 7,
             'Cn', 'Copernicium', '(285)', 12, 7,
             'Nh', 'Nihonium', '(286)', 13, 7,
             'Fl', 'Flerovium', '(289)', 14, 7,
@@ -240,191 +240,181 @@
 
         function init() {
 
-            const container = document.getElementById('container');
-
-            camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
+            camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
             camera.position.z = 3000;
 
             scene = new THREE.Scene();
 
-            // Table
+            // table
 
-            for (let i = 0; i < table.length; i += 5) {
+            for ( let i = 0; i < table.length; i += 5 ) {
 
-                const element = document.createElement('div');
+                const element = document.createElement( 'div' );
                 element.className = 'element';
-                element.style.backgroundColor = 'rgba(0,127,127,' + (Math.random() * 0.5 + 0.25) + ')';
+                element.style.backgroundColor = 'rgba(0,127,127,' + ( Math.random() * 0.5 + 0.25 ) + ')';
 
-                const number = document.createElement('div');
+                const number = document.createElement( 'div' );
                 number.className = 'number';
-                number.textContent = (i / 5) + 1;
-                element.appendChild(number);
+                number.textContent = ( i / 5 ) + 1;
+                element.appendChild( number );
 
-                const symbol = document.createElement('div');
+                const symbol = document.createElement( 'div' );
                 symbol.className = 'symbol';
-                symbol.textContent = table[i];
-                element.appendChild(symbol);
+                symbol.textContent = table[ i ];
+                element.appendChild( symbol );
 
-                const details = document.createElement('div');
+                const details = document.createElement( 'div' );
                 details.className = 'details';
-                details.innerHTML = table[i + 1] + '<br>' + table[i + 2];
-                element.appendChild(details);
+                details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+                element.appendChild( details );
 
-                const objectCSS = new CSS3DObject(element);
+                const objectCSS = new CSS3DObject( element );
                 objectCSS.position.x = Math.random() * 4000 - 2000;
                 objectCSS.position.y = Math.random() * 4000 - 2000;
                 objectCSS.position.z = Math.random() * 4000 - 2000;
-                scene.add(objectCSS);
+                scene.add( objectCSS );
 
-                objects.push(objectCSS);
+                objects.push( objectCSS );
 
                 //
 
                 const object = new THREE.Object3D();
-                object.position.x = (table[i + 3] * 140) - 1330;
-                object.position.y = -(table[i + 4] * 180) + 990;
+                object.position.x = ( table[ i + 3 ] * 140 ) - 1330;
+                object.position.y = - ( table[ i + 4 ] * 180 ) + 990;
 
-                targets.table.push(object);
+                targets.table.push( object );
 
             }
 
-            // Sphere
+            // sphere
 
             const vector = new THREE.Vector3();
 
-            for (let i = 0, l = objects.length; i < l; i++) {
+            for ( let i = 0, l = objects.length; i < l; i ++ ) {
 
-                const phi = Math.acos(-1 + (2 * i) / l);
-                const theta = Math.sqrt(l * Math.PI) * phi;
+                const phi = Math.acos( -1 + ( 2 * i ) / l );
+                const theta = Math.sqrt( l * Math.PI ) * phi;
 
                 const object = new THREE.Object3D();
 
-                object.position.setFromSphericalCoords(800, phi, theta);
+                object.position.setFromSphericalCoords( 800, phi, theta );
 
-                vector.copy(object.position).multiplyScalar(2);
+                vector.copy( object.position ).multiplyScalar( 2 );
 
-                object.lookAt(vector);
+                object.lookAt( vector );
 
-                targets.sphere.push(object);
+                targets.sphere.push( object );
 
             }
 
-            // Helix
+            // helix
 
-            for (let i = 0, l = objects.length; i < l; i++) {
+            for ( let i = 0, l = objects.length; i < l; i ++ ) {
 
                 const theta = i * 0.175 + Math.PI;
-                const y = -(i * 8) + 450;
+                const y = - ( i * 8 ) + 450;
 
                 const object = new THREE.Object3D();
 
-                object.position.setFromCylindricalCoords(900, theta, y);
+                object.position.setFromCylindricalCoords( 900, theta, y );
 
                 vector.x = object.position.x * 2;
                 vector.y = object.position.y;
                 vector.z = object.position.z * 2;
 
-                object.lookAt(vector);
+                object.lookAt( vector );
 
-                targets.helix.push(object);
+                targets.helix.push( object );
 
             }
 
-            // Grid
+            // grid
 
-            for (let i = 0; i < objects.length; i++) {
+            for ( let i = 0; i < objects.length; i ++ ) {
 
                 const object = new THREE.Object3D();
 
-                object.position.x = ((i % 5) * 400) - 800;
-                object.position.y = (-(Math.floor(i / 5) % 5) * 400) + 800;
-                object.position.z = (Math.floor(i / 25)) * 1000 - 2000;
+                object.position.x = ( ( i % 5 ) * 400 ) - 800;
+                object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+                object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
 
-                targets.grid.push(object);
+                targets.grid.push( object );
 
             }
 
             //
 
             renderer = new CSS3DRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.getElementById( 'container' ).appendChild( renderer.domElement );
 
             //
 
-            controls = new TrackballControls(camera, renderer.domElement);
+            controls = new TrackballControls( camera, renderer.domElement );
             controls.minDistance = 500;
             controls.maxDistance = 6000;
-            controls.addEventListener('change', render);
+            controls.addEventListener( 'change', render );
 
-            const buttonTable = document.getElementById('table');
-            buttonTable.addEventListener('click', function () {
+            const buttonTable = document.getElementById( 'table' );
+            buttonTable.addEventListener( 'click', function () {
 
-                transform(targets.table, 2000);
+                transform( targets.table, 2000 );
 
-            });
+            }, false );
 
-            const buttonSphere = document.getElementById('sphere');
-            buttonSphere.addEventListener('click', function () {
+            const buttonSphere = document.getElementById( 'sphere' );
+            buttonSphere.addEventListener( 'click', function () {
 
-                transform(targets.sphere, 2000);
+                transform( targets.sphere, 2000 );
 
-            });
+            }, false );
 
-            const buttonHelix = document.getElementById('helix');
-            buttonHelix.addEventListener('click', function () {
+            const buttonHelix = document.getElementById( 'helix' );
+            buttonHelix.addEventListener( 'click', function () {
 
-                transform(targets.helix, 2000);
+                transform( targets.helix, 2000 );
 
-            });
+            }, false );
 
-            const buttonGrid = document.getElementById('grid');
-            buttonGrid.addEventListener('click', function () {
+            const buttonGrid = document.getElementById( 'grid' );
+            buttonGrid.addEventListener( 'click', function () {
 
-                transform(targets.grid, 2000);
+                transform( targets.grid, 2000 );
 
-            });
+            }, false );
 
-            transform(targets.table, 5000);
+            transform( targets.table, 5000 );
 
             //
 
-            window.addEventListener('resize', onWindowResize);
+            window.addEventListener( 'resize', onWindowResize );
 
         }
 
-        function transform(targets, duration) {
+        function transform( targets, duration ) {
 
             TWEEN.removeAll();
 
-            for (let i = 0; i < objects.length; i++) {
+            for ( let i = 0; i < objects.length; i ++ ) {
 
-                const object = objects[i];
-                const target = targets[i];
+                const object = objects[ i ];
+                const target = targets[ i ];
 
-                new TWEEN.Tween(object.position)
-                    .to({
-                        x: target.position.x,
-                        y: target.position.y,
-                        z: target.position.z
-                    }, Math.random() * duration + duration)
-                    .easing(TWEEN.Easing.Exponential.InOut)
+                new TWEEN.Tween( object.position )
+                    .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+                    .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
 
-                new TWEEN.Tween(object.rotation)
-                    .to({
-                        x: target.rotation.x,
-                        y: target.rotation.y,
-                        z: target.rotation.z
-                    }, Math.random() * duration + duration)
-                    .easing(TWEEN.Easing.Exponential.InOut)
+                new TWEEN.Tween( object.rotation )
+                    .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+                    .easing( TWEEN.Easing.Exponential.InOut )
                     .start();
 
             }
 
-            new TWEEN.Tween(this)
-                .to({}, duration * 2)
-                .onUpdate(render)
+            new TWEEN.Tween( this )
+                .to( {}, duration * 2 )
+                .onUpdate( render )
                 .start();
 
         }
@@ -434,7 +424,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
 
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize( window.innerWidth, window.innerHeight );
 
             render();
 
@@ -442,7 +432,7 @@
 
         function animate() {
 
-            requestAnimationFrame(animate);
+            requestAnimationFrame( animate );
 
             TWEEN.update();
 
@@ -452,12 +442,10 @@
 
         function render() {
 
-            renderer.render(scene, camera);
+            renderer.render( scene, camera );
 
         }
 
     </script>
-
 </body>
-
 </html>
